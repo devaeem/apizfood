@@ -13,12 +13,15 @@ exports.list = async (req, res) => {
       filter = { name: { $regex: search, $options: "i" } };
     }
 
-    console.log("search", search);
-    const product = await Product.find(filter).populate('categoryRef').sort({ createdAt: -1 }).skip(skip).limit(pageSize);
+    const product = await Product.find(filter)
+      .populate("categoryRef")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(pageSize);
     const totalCategories = await Product.countDocuments(filter);
     const totalPages = Math.ceil(totalCategories / pageSize);
 
-    res.status(200).send({ product,totalPages });
+    res.status(200).send({ product, totalPages });
   } catch (err) {
     res.status(500).send("Server Error!!!");
   }
@@ -36,7 +39,9 @@ exports.create = async (req, res) => {
 
 exports.read = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
+    const product = await Product.findById(req.params.id).populate(
+      "categoryRef"
+    );
     res.status(201).send({ product });
   } catch (err) {
     res.status(500).send("Server Error!!!");
@@ -46,11 +51,10 @@ exports.read = async (req, res) => {
 exports.update = async (req, res) => {
   try {
     const id = req.params.id;
-    const { name } = req.body;
-    const product = await Product.findByIdAndUpdate(
-      { _id: id },
-      { name: name }
-    );
+    const { ...updateData } = req.body;
+    const product = await Product.findByIdAndUpdate(id, updateData, {
+      new: true,
+    });
     res.status(201).send({ msg: "Product Updated Successfully" });
   } catch (err) {
     res.status(500).send("Server Error!!!");

@@ -13,7 +13,7 @@ exports.list = async (req, res) => {
       filter = { name: { $regex: search, $options: "i" } };
     }
 
-    console.log("search", search);
+
     const category = await Category.find(filter).sort({ createdAt: -1 }).skip(skip).limit(pageSize);
     const totalCategories = await Category.countDocuments(filter);
     const totalPages = Math.ceil(totalCategories / pageSize);

@@ -3,6 +3,8 @@ const { Product } = require("../model/product");
 exports.list = async (req, res) => {
   try {
     const search = req.query.search;
+    const categoryRef = req.query.categoryRef;
+    console.log('categoryRef', categoryRef)
 
     const page = parseInt(req.query.page) || 1;
     const pageSize = parseInt(req.query.pageSize) || 10;
@@ -11,6 +13,10 @@ exports.list = async (req, res) => {
     let filter = {};
     if (search) {
       filter = { name: { $regex: search, $options: "i" } };
+    }
+
+    if (categoryRef) {
+      filter.categoryRef = categoryRef;
     }
 
     const product = await Product.find(filter)

@@ -17,7 +17,7 @@ exports.list = async (req, res) => {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(pageSize);
-    const totalBanner= await Banner.countDocuments(filter);
+    const totalBanner = await Banner.countDocuments(filter);
     const totalPages = Math.ceil(totalBanner / pageSize);
 
     res.status(200).send({ banner, totalPages });
@@ -38,7 +38,7 @@ exports.create = async (req, res) => {
 
 exports.read = async (req, res) => {
   try {
-    const banner = await Banner.findById(req.params.id)
+    const banner = await Banner.findById(req.params.id);
     res.status(201).send({ banner });
   } catch (err) {
     res.status(500).send("Server Error!!!");
@@ -48,10 +48,8 @@ exports.read = async (req, res) => {
 exports.update = async (req, res) => {
   try {
     const id = req.params.id;
-    const { ...updateData } = req.body;
-    const banner = await Banner.findByIdAndUpdate(id, updateData, {
-      new: true,
-    });
+    const { image } = req.body;
+    const banner = await Banner.findByIdAndUpdate(id, { image }, { new: true });
     res.status(201).send({ msg: "banner Updated Successfully" });
   } catch (err) {
     res.status(500).send("Server Error!!!");

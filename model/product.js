@@ -19,7 +19,7 @@ const ProductSchema = new mongoose.Schema(
       type: String,
     },
     image: {
-      type: String,
+      type: Array,
     },
 
     isDeleted: {

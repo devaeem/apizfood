@@ -4,11 +4,24 @@ const prisma = new PrismaClient();
 
 exports.list = async (req, res) => {
   try {
-    const { search } = req.query;
+    const { search, categoryId } = req.query;
+
     const page = parseInt(req.query.page) || 1;
     const pageSize = parseInt(req.query.pageSize) || 10;
     const skip = (page - 1) * pageSize;
-    const where = search ? { name: { contains: search } } : {};
+
+    let where = {};
+    if (search) {
+      search
+        ? (where.name = {
+            contains: search,
+          })
+        : {};
+    }
+
+    if (categoryId) {
+      where.categoryId = categoryId;
+    }
 
     const [products, totalCount] = await Promise.all([
       prisma.product.findMany({
@@ -41,15 +54,17 @@ exports.list = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    const { name, desc, price, categoryId, Image } = req.body;
+    const { name, categoryId, desc, Image } = req.body;
+    const price = parseFloat(req.body.price);
+
 
     const result = await prisma.$transaction(async (prisma) => {
       const product = await prisma.product.create({
         data: {
           name: name,
-          desc: desc,
-          price: price,
           categoryId: categoryId,
+          price: price,
+          desc: desc,
         },
       });
 
@@ -64,8 +79,6 @@ exports.create = async (req, res) => {
 
       return product;
     });
-
-    // const { name, desc, price, categoryId } = req.body;
 
     // const product = await prisma.product.create({
     //   data: {
@@ -125,13 +138,6 @@ exports.update = async (req, res) => {
       return product;
     });
 
-    // const { image } = req.body;
-    // const banner = await prisma.banner.update({
-    //   where: { id: id },
-    //   data: {
-    //     images: image,
-    //   },
-    // });
     res.status(201).send({ msg: "Banner Updated Successfully" });
   } catch (err) {
     res.status(500).send("Server Error!!!");
@@ -143,7 +149,6 @@ exports.remove = async (req, res) => {
     const id = req.params.id;
 
     const result = await prisma.$transaction(async (prisma) => {
-
       await prisma.image.deleteMany({
         where: { productId: id },
       });
@@ -167,7 +172,6 @@ exports.removeImage = async (req, res) => {
     const id = req.params.id;
 
     const result = await prisma.$transaction(async (prisma) => {
-
       const product = await prisma.product.delete({
         where: { id: id },
       });

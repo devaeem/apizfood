@@ -9,7 +9,7 @@ const app = express();
 const port = 3001;
 app.use(morgan("dev"));
 app.use(cors());
-connectToDatabase();
+// connectToDatabase();
 app.use(bodyParser.json({ limit: "20mb" }));
 
 app.get('/', (req, res) => {

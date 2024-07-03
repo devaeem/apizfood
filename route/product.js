@@ -9,7 +9,8 @@ const {
     create,
     read,
     update,
-    remove
+    remove,
+    removeImage
   } = require("../controller/product");
 
 
@@ -24,7 +25,7 @@ router.get('/product',list)
  router.put('/product/:id',update)
 
  router.delete('/product/:id',remove)
-
+ router.delete('/productdeleteimage/:id',removeImage)
 
 
 

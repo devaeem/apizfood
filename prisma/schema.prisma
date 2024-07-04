@@ -14,6 +14,17 @@ datasource db {
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
+model User {
+  id        String   @id @default(uuid())
+  username  String   @unique
+  password  String
+  role      String   @default("users")
+  isDeleted Boolean  @default(false)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
 model Post {
   id        Int      @id @default(autoincrement())
   title     String
@@ -41,17 +52,17 @@ model Banner {
 }
 
 model Product {
-  id    String @id @default(uuid())
-  name  String
-  price Float
-  desc  String
+  id         String   @id @default(uuid())
+  name       String
+  price      Float
+  desc       String
   Category   Category @relation(fields: [categoryId], references: [id])
   categoryId String
   images     Image[]
-  isDeleted Boolean  @default(false)
-  active    Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  isDeleted  Boolean  @default(false)
+  active     Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now())
 }
 
 model Image {

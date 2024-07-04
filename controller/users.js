@@ -1,9 +1,10 @@
-const { Users } = require("../model/users");
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 exports.list = async (req, res) => {
   try {
-    const users = await Users.find({}).select("-password").exec();
+    const users = await prisma.user.findMany({});
 
     res.status(200).send({ users });
   } catch (err) {
@@ -13,33 +14,37 @@ exports.list = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    const { email, password } = req.body;
-
-    const existingUser = await Users.findOne({ email: email });
-
-    if (existingUser) {
-      return res.status(400).send("User Already exists");
-    }
+    const { username, password } = req.body;
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-
-    const newUser = new Users({
-      email,
-      password: hashedPassword,
+    const existingUser = await prisma.user.findUnique({
+      where: { username: username },
     });
 
-    await newUser.save();
+    if (existingUser) {
+      return res.status(400).json({ msg: "User already exists" });
+    }
 
-    res.status(201).send({ msg: "Users Created Successfully" });
+    const newUser = await prisma.user.create({
+      data: {
+        username: username,
+        password: hashedPassword,
+      },
+    });
+
+    res.status(201).json({ message: "สร้างผู้ใช้สำเร็จ" });
   } catch (err) {
-    res.status(500).send("Server Error!!!");
+    console.error("เกิดข้อผิดพลาดในการสร้างผู้ใช้:", err);
+    res.status(500).json({ error: "เกิดข้อผิดพลาดที่เซิร์ฟเวอร์" });
   }
 };
 
 exports.read = async (req, res) => {
   try {
-    const users = await Users.findById(req.params.id);
+    const users = await prisma.user.findUnique({
+      where: { id: req.params.id },
+    });
     res.status(201).send({ users });
   } catch (err) {
     res.status(500).send("Server Error!!!");

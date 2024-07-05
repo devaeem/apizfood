@@ -12,18 +12,19 @@ const {
     remove
   } = require("../controller/category");
 
+  const { auth} = require("../middleware/auth")
 
 //@Endpoint http://localhost:5000/api/category
 
 router.get('/category',list)
 
- router.post('/category',create)
+ router.post('/category',auth,create)
 
  router.get('/category/:id',read)
 
- router.put('/category/:id',update)
+ router.put('/category/:id',auth,update)
 
- router.delete('/category/:id',remove)
+ router.delete('/category/:id',auth,remove)
 
 
 

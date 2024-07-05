@@ -39,7 +39,7 @@ model Category {
   active    Boolean   @default(true)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @default(now())
-  Product   Product[]
+   Product   Product[]
 }
 
 model Banner {

@@ -11,19 +11,19 @@ const {
     update,
     remove
   } = require("../controller/banner");
-
+  const { auth} = require("../middleware/auth")
 
 //@Endpoint http://localhost:5000/api/category
 
 router.get('/banner',list)
 
- router.post('/banner',create)
+ router.post('/banner',auth,create)
 
  router.get('/banner/:id',read)
 
- router.put('/banner/:id',update)
+ router.put('/banner/:id',auth,update)
 
- router.delete('/banner/:id',remove)
+ router.delete('/banner/:id',auth,remove)
 
 
 

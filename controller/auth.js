@@ -27,7 +27,8 @@ exports.auth = async (req, res) => {
    res.json({data:{
       accessToken:token,
       username:payload.user.username,
-      role:payload.user.role
+      role:payload.user.role,
+      status: 200
    }})
   })
 

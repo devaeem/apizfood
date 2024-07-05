@@ -13,19 +13,19 @@ const {
     removeImage
   } = require("../controller/product");
 
-
+  const { auth} = require("../middleware/auth")
 //@Endpoint http://localhost:5000/api/category
 
 router.get('/product',list)
 
- router.post('/product',create)
+ router.post('/product',auth,create)
 
  router.get('/product/:id',read)
 
- router.put('/product/:id',update)
+ router.put('/product/:id',auth,update)
 
  router.delete('/product/:id',remove)
- router.delete('/productdeleteimage/:id',removeImage)
+ router.delete('/productdeleteimage/:id',auth,removeImage)
 
 
 

@@ -10,13 +10,16 @@ const {
     read,
     update,
     remove,
-    removeImage
+    removeImage,
+    random
   } = require("../controller/product");
 
   const { auth} = require("../middleware/auth")
 //@Endpoint http://localhost:5000/api/category
 
 router.get('/product',list)
+
+router.get('/productrandom',random)
 
  router.post('/product',auth,create)
 

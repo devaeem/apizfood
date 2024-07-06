@@ -52,6 +52,45 @@ exports.list = async (req, res) => {
   }
 };
 
+
+exports.random = async (req, res) => {
+  try {
+    const page =  1;
+    const pageSize = 5;
+    const skip = (page - 1) * pageSize;
+
+    const totalCount = await prisma.product.count();
+    const totalPages = Math.ceil(totalCount / pageSize);
+
+    const products = await prisma.product.findMany({
+      skip: Number(skip),
+      take: Number(pageSize),
+      orderBy: {
+        id: 'asc',
+      },
+      include: {
+        Category: true,
+        images: true,
+      },
+    });
+
+
+    for (let i = products.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [products[i], products[j]] = [products[j], products[i]];
+    }
+
+    res.status(200).json({
+      products,
+      totalPages,
+      msg: "Products Randomly Fetched Successfully",
+    });
+  } catch (err) {
+    console.error("Error fetching products:", err);
+    res.status(500).json({ error: "Server Error", details: err.message });
+  }
+};
+
 exports.create = async (req, res) => {
   try {
     const { name, categoryId, desc, Image } = req.body;
